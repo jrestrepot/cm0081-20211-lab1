@@ -20,7 +20,7 @@ accept a
      q0 = faStartState a
      f = faFinalStates a
 
--- | The inputNum function returns whether the number of Moves that a state is the same as the number of symbols in the alphabet.
+-- | The inputNum function returns whether the number of Moves that a state is the same as the number of symbols in the alphabet. 
 inputNum :: a -> Set (Move a) -> Bool
 inputNum q ms = List.length [ c | Move q c _ <- Set.toList ms ] == List.length nub [ c | Move _ c _ <- Set.toList ms ]
 
