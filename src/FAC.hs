@@ -86,8 +86,8 @@ validation a
 
 main :: IO ()
 main = do
-     -- file <- readFile "ejemplo.txt"
-     let fa = MkFA (Set.fromList [0,1,2])(Set.fromList [ Move 0 'a' 1, Move 0 'b' 2, Move 1 'a' 2, Move 1 'b' 1, Move 2 'a' 1, Move 2 'b' 0])0(Set.fromList [2,1])--fa = read file :: FA String
+     file <- readFile "test/mach-m.txt"
+     let fa = read file :: FA Int
      print(accept fa)
      print(validation fa)
 
