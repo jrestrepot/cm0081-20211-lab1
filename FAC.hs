@@ -4,15 +4,31 @@ import qualified Data.Set as Set
 import Data.List ( nub )
 import qualified Data.List as List
 
+-- | isState1 returns if the first state in the transition function is part of the set of states
+isState1 :: Ord a => Set a -> Set (Move a) -> Bool
+isState1 q ms = st`Set.isSubsetOf` q
+     where 
+     st_e = Set.fromList [st | Emove st _ <-Set.toList ms ]
+     st_m = Set.fromList [st | Move st _ _ <-Set.toList ms ]
+     st = st_m `Set.union` st_e
+
+-- | isState1 returns if the second state in the transition function is part of the set of states
+isState2 :: Ord a => Set a -> Set (Move a) -> Bool
+isState2 q ms = st`Set.isSubsetOf` q
+     where 
+     st_e = Set.fromList [st | Emove _ st <-Set.toList ms ]
+     st_m = Set.fromList [st | Move _ _ st <-Set.toList ms ]
+     st = st_m `Set.union` st_e
 
 -- | The accept function recieves a FA data type and returns if it is a finite automaton or not, giving the reasons behind its categorization. 
 accept :: Ord a => FA a -> String
 accept a 
      | Set.null q = "The automaton is invalid because it does not have states"
      | q0 `Set.member` q == False = "The automaton is invalid because q0 does not belong to Q"
+     | isState1 q delta == False = "The automaton is invalid because its transition fuction uses states that do not exist"
+     | isState2 q delta == False = "The automaton is invalid because its transition fuction uses states that do not exist"
      | f `Set.isSubsetOf` q == False = "The automaton if invalid because F is not a subset of Q"
      | otherwise = "The automaton is valid"
-
      where
      q = faStates a
      sigma = faAlphabet a  
@@ -20,46 +36,36 @@ accept a
      q0 = faStartState a
      f = faFinalStates a
 
-
--- | epsilonList determines if there are epsilon transition fuctions or not. 
+-- | epsilonList determines if there are transition fuctions that use epsilon or not. 
 epsilonList :: Eq a => Set (Move a) -> Bool
-epsilonList ms = null [st | Emove st _ <-Set.toList ms ] 
-
-
+epsilonList ms = null [st | Emove st _ <-Set.toList ms ] -- If the list containing all the Emoves is empty, the transition function does not use Emoves
 
 -- | The isENFA function returns whether a FA data type is a epsilon non-deterministic finite automaton.
 isENFA :: Ord a => FA a -> Bool
 isENFA a
      | accept a /= "The automaton is valid" = False
-     | epsilonList delta = False
+     | epsilonList delta = False -- If epsilonList in delta returns True, it means the transition function does not use Emoves, therefore the automaton is not an e-NFA
      | otherwise = True
-
      where
      delta = faMoves a
 
-
--- | The inputNum function returns whether the number of Moves that a state is the same as the number of symbols in the alphabet.
+-- | The inputNum function returns whether the list of inputs of the state's transition functions is equal to the alphabet.
 inputNum :: Eq a => a -> Set (Move a) -> Bool
 inputNum q ms = List.sort [ c | Move st c _ <- Set.toList ms, st == q ] == sigma
+-- We use Sort in order to avoid that the order of sigma and ms afect the result. For instance, we avoid 'ab' == 'ba'.
   where
-    -- We use Sort in order to avoid that the order of sigma and ms afect the result. For instance, we avoid 'ab' == 'ba'.
-    sigma  = List.sort (nub [ c | Move _ c _ <- Set.toList ms ]) -- | Automaton's alphabet
+    sigma  = List.sort (nub [ c | Move _ c _ <- Set.toList ms ]) -- The automaton's alphabet
 
 -- | The isDFA function returns whether a FA data type is a deterministic finite automaton.
 isDFA :: Ord a => FA a -> Bool
 isDFA a
      | accept a /= "The automaton is valid" = False
-     | and (Set.map (\x -> inputNum x delta) q) == False = False
+     | and (Set.map (\x -> inputNum x delta) q) == False = False -- If at least one state's transition function repeats an input or lacks one, the automaton is not deterministic
      | isENFA a = False
      | otherwise = True
-
      where
-     q = faStates a
-     sigma = faAlphabet a  
+     q = faStates a 
      delta = faMoves a
-     q0 = faStartState a
-     f = faFinalStates a
-
 
 -- | The isNFA function returns whether a FA data type is a non- deterministic finite automaton.
 isNFA :: Ord a => FA a -> Bool
@@ -68,14 +74,6 @@ isNFA a
      | isDFA a = False
      | isENFA a = False
      | otherwise = True
- 
-     where
-     q = faStates a
-     sigma = faAlphabet a  
-     delta = faMoves a
-     q0 = faStartState a
-     f = faFinalStates a
-     eps = Emove a a
 
 -- |  Validation returns a String that explains what type of automaton is the input.
 validation :: Ord a => FA a -> String
@@ -83,12 +81,14 @@ validation a
      | isDFA a = "The automaton is a DFA"
      | isENFA a = "The automaton is an e-NFA"
      | isNFA a = "The automaton is a NFA"
+     | otherwise = " "
 
 main :: IO ()
 main = do
-     let fa = MkFA (Set.fromList [0,1,2,3])(Set.fromList [ Move 0 'a' 1, Move 0 'a' 2, Move 1 'a' 3, Move 1 'b' 3, Move 2 'a' 3, Move 2 'b' 3, Move 3 'b' 3, Move 3 'a' 2])0(Set.fromList [3])
+     -- file <- readFile "ejemplo.txt"
+     let fa = MkFA (Set.fromList [0,1,2,3,4,5])(Set.fromList [ Move 0 'a' 1, Move 0 'a' 3, Move 1 'b' 2, Move 3 'b' 4, Move 4 'b' 5])0(Set.fromList [2,5])--fa = read file :: FA String
      print(accept fa)
      print(validation fa)
 
- {- file <- readFile "mach-m.txt"
-  let test2 = read file :: FA String -}
+ 
+ 
