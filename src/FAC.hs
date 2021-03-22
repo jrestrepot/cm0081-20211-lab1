@@ -88,7 +88,7 @@ validation a
 
 main :: IO ()
 main = do
-     file <- readFile "mach-n.txt"
+     file <- readFile "test/mach-m.txt"
      let fa =read file :: FA Int
      print(accept fa)
      print(validation fa)
