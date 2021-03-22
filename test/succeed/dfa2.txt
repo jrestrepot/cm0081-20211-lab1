@@ -1,1 +1,1 @@
-MkFA (Set.fromList [0,1]) (Set.fromList [Move 0 'a' 1]) 0 (Set.fromList [1])
+MkFA (fromList [0,1]) (fromList [Move 0 'a' 1]) 0 (fromList [1])
