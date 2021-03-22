@@ -1,0 +1,1 @@
+MkFA (fromList [0,1,2,3])(fromList [ Move 0 'a' 1, Move 0 'b' 2, Move 1 'a' 3, Move 1 'b' 4, Move 2 'a' 3, Move 2 'b' 4])0(fromList [3])
