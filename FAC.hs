@@ -10,31 +10,31 @@ isState1 q ms = st`Set.isSubsetOf` q
      where 
      st_e = Set.fromList [st | Emove st _ <-Set.toList ms ]
      st_m = Set.fromList [st | Move st _ _ <-Set.toList ms ]
-     st = st_m `Set.union` st_e
+     st   = st_m `Set.union` st_e
 
 -- | isState1 returns if the second state in the transition function is part of the set of states
 isState2 :: Ord a => Set a -> Set (Move a) -> Bool
 isState2 q ms = st`Set.isSubsetOf` q
      where 
-     st_e = Set.fromList [st | Emove _ st <-Set.toList ms ]
+     st_e = Set.fromList [st | Emove _ st <-Set.toList ms ] 
      st_m = Set.fromList [st | Move _ _ st <-Set.toList ms ]
-     st = st_m `Set.union` st_e
+     st   = st_m `Set.union` st_e
 
 -- | The accept function recieves a FA data type and returns if it is a finite automaton or not, giving the reasons behind its categorization. 
 accept :: Ord a => FA a -> String
 accept a 
-     | Set.null q = "The automaton is invalid because it does not have states"
-     | q0 `Set.member` q == False = "The automaton is invalid because q0 does not belong to Q"
-     | isState1 q delta == False = "The automaton is invalid because its transition fuction uses states that do not exist"
-     | isState2 q delta == False = "The automaton is invalid because its transition fuction uses states that do not exist"
-     | f `Set.isSubsetOf` q == False = "The automaton if invalid because F is not a subset of Q"
-     | otherwise = "The automaton is valid"
+     | Set.null q                  = "The automaton is invalid because it does not have states"
+     | not (q0 `Set.member` q)     = "The automaton is invalid because q0 does not belong to Q"
+     | not (isState1 q delta)      = "The automaton is invalid because its transition fuction uses states that do not exist"
+     | not (isState2 q delta)      = "The automaton is invalid because its transition fuction uses states that do not exist"
+     | not (f `Set.isSubsetOf` q ) = "The automaton if invalid because F is not a subset of Q"
+     | otherwise                   = "The automaton is valid"
      where
-     q = faStates a
+     q     = faStates a
      sigma = faAlphabet a  
      delta = faMoves a
-     q0 = faStartState a
-     f = faFinalStates a
+     q0    = faStartState a
+     f     = faFinalStates a
 
 -- | epsilonList determines if there are transition fuctions that use epsilon or not. 
 epsilonList :: Eq a => Set (Move a) -> Bool
@@ -44,7 +44,8 @@ epsilonList ms = null [st | Emove st _ <-Set.toList ms ] -- If the list containi
 isENFA :: Ord a => FA a -> Bool
 isENFA a
      | accept a /= "The automaton is valid" = False
-     | epsilonList delta = False -- If epsilonList in delta returns True, it means the transition function does not use Emoves, therefore the automaton is not an e-NFA
+     | epsilonList delta = False -- If epsilonList in delta returns True, it means the transition function does not use Emoves, therefore 
+     --the automaton is not an e-NFA
      | otherwise = True
      where
      delta = faMoves a
@@ -60,7 +61,7 @@ inputNum q ms = List.sort [ c | Move st c _ <- Set.toList ms, st == q ] == sigma
 isDFA :: Ord a => FA a -> Bool
 isDFA a
      | accept a /= "The automaton is valid" = False
-     | and (Set.map (\x -> inputNum x delta) q) == False = False -- If at least one state's transition function repeats an input or lacks one, the automaton is not deterministic
+     | not (and (Set.map (\x -> inputNum x delta) q)) = False -- If at least one state's transition function repeats an input or lacks one, the automaton is not deterministic
      | isENFA a = False
      | otherwise = True
      where
@@ -71,22 +72,22 @@ isDFA a
 isNFA :: Ord a => FA a -> Bool
 isNFA a
      | accept a /= "The automaton is valid" = False
-     | isDFA a = False
-     | isENFA a = False
+     | isDFA a   = False
+     | isENFA a  = False
      | otherwise = True
 
 -- |  Validation returns a String that explains what type of automaton is the input.
 validation :: Ord a => FA a -> String
 validation a
-     | isDFA a = "The automaton is a DFA"
-     | isENFA a = "The automaton is an e-NFA"
-     | isNFA a = "The automaton is a NFA"
+     | isDFA a   = "The automaton is a DFA"
+     | isENFA a  = "The automaton is an e-NFA"
+     | isNFA a   = "The automaton is a NFA"
      | otherwise = " "
 
 main :: IO ()
 main = do
      -- file <- readFile "ejemplo.txt"
-     let fa = MkFA (Set.fromList [0,1,2,3,4,5])(Set.fromList [ Move 0 'a' 1, Move 0 'a' 3, Move 1 'b' 2, Move 3 'b' 4, Move 4 'b' 5])0(Set.fromList [2,5])--fa = read file :: FA String
+     let fa = MkFA (Set.fromList [0,1,2])(Set.fromList [ Move 0 'a' 1, Move 0 'b' 2, Move 1 'a' 2, Move 1 'b' 1, Move 2 'a' 1, Move 2 'b' 0])0(Set.fromList [2,1])--fa = read file :: FA String
      print(accept fa)
      print(validation fa)
 
