@@ -38,7 +38,8 @@ accept a
 
 -- | epsilonList determines if there are transition fuctions that use epsilon or not. 
 epsilonList :: Eq a => Set (Move a) -> Bool
-epsilonList ms = null [st | Emove st _ <-Set.toList ms ] -- If the list containing all the Emoves is empty, the transition function does not use Emoves
+epsilonList ms = null [st | Emove st _ <-Set.toList ms ] -- If the list containing all the Emoves is empty, the transition function 
+--does not use Emoves
 
 -- | The isENFA function returns whether a FA data type is a epsilon non-deterministic finite automaton.
 isENFA :: Ord a => FA a -> Bool
@@ -61,7 +62,8 @@ inputNum q ms = List.sort [ c | Move st c _ <- Set.toList ms, st == q ] == sigma
 isDFA :: Ord a => FA a -> Bool
 isDFA a
      | accept a /= "The automaton is valid" = False
-     | not (and (Set.map (\x -> inputNum x delta) q)) = False -- If at least one state's transition function repeats an input or lacks one, the automaton is not deterministic
+     | not (and (Set.map (\x -> inputNum x delta) q)) = False -- If at least one state's transition function repeats an input or lacks one, 
+     --the automaton is not deterministic
      | isENFA a = False
      | otherwise = True
      where
@@ -86,10 +88,7 @@ validation a
 
 main :: IO ()
 main = do
-     file <- readFile "test/mach-m.txt"
-     let fa = read file :: FA Int
+     file <- readFile "mach-n.txt"
+     let fa =read file :: FA Int
      print(accept fa)
      print(validation fa)
-
- 
- 
