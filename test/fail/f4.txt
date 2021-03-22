@@ -1,0 +1,1 @@
+MkFA (Set.fromList []) (Set.fromList [Move 0 'a' 0]) 0 (Set.fromList [0])
