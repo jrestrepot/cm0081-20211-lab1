@@ -1,3 +1,1 @@
 MkFA (Set.fromList [0,1,2,3])(Set.fromList [ Move 0 'a' 0, Move 0 'a' 1, Move 0 'b' 0, Move 1 'b' 1, Move 1 'a' 2, Move 2 'b' 1, Move 2 'a' 3, Move 3 'b' 3, Move 3 'a' 0])0(Set.fromList [1,2,3])
-MkFA (Set.fromList [0,1,2,3])(Set.fromList [ Move 0 'a' 0, Move 0 'a' 1, Move 1 'a' 3, Move 1 'b' 2, Move 2 'b' 2, Move 2 'a' 3])0(Set.fromList [3])
-MkFA (Set.fromList [0,1,2,3,4,5])(Set.fromList [ Move 0 'b' 1, Move 0 'b' 2, Move 0 'c' 5, Move 1 'b' 1, Move 1 'a' 2, Move 2 'b' 3, Move 2 'a' 4, Nove 2 'c' 5, Move 3 'b' 3, Move 3 'a' 4, Move 5 'c' 5, Move 4 'a' 4])0(Set.fromList [4,5])
