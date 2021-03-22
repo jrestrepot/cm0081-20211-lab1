@@ -1,1 +1,1 @@
-MkFA (Set.fromList [0,1,2])(Set.fromList [ Move 0 'a' 1, Move 0 'b' 2, Move 1 'a' 2, Move 1 'b' 2, Move 2 'a' 3, Move 2 'b' 2])0(Set.fromList [3])
+MkFA (fromList [0,1,2])(fromList [ Move 0 'a' 1, Move 0 'b' 2, Move 1 'a' 2, Move 1 'b' 2, Move 2 'a' 3, Move 2 'b' 2])0(fromList [3])
