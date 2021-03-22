@@ -78,7 +78,7 @@ isNFA a
      | isENFA a  = False
      | otherwise = True
 
--- |  Validation returns a String that explains what type of automaton is the input.
+-- |  Validation returns a String that explains what type of automaton is the input
 validation :: Ord a => FA a -> String
 validation a
      | isDFA a   = "The automaton is a DFA"
